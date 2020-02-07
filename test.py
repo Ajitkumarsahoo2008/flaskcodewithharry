@@ -7,14 +7,22 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 import sys
+import json
 
+with open('config.json','r') as c:
+    params = json.load(c)["params"]
+local_server = True
 app=Flask(__name__)
 #conn=pymysql.connect(db='ajit', user='malli',password='Rama@1234',host='localhost', port=3306)
 #print(conn)
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://malli:Rama@1234@localhost/ajit'
 #sys.exit()
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/Myprodb.db'
+if (local_server):
+    app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = params['prod_uri']
+    
 #app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 
@@ -45,15 +53,15 @@ db.create_all() # In case user table doesn't exists already. Else remove it.
 
 @app.route("/blog")
 def bootstrap():
-    return render_template('blogfile.html')
+    return render_template('blogfile.html',params=params)
 
 @app.route("/index")
 def index():
-    return render_template('index.html')
+    return render_template('index.html',params=params)
 
 @app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template('about.html',params=params)
 
 @app.route("/contact",methods=['GET','POST'])
 def contact():
@@ -67,7 +75,7 @@ def contact():
         db.session.add(entry)
         db.session.commit()
 
-    return render_template('contact.html')
+    return render_template('contact.html',params=params)
 
 
 if  __name__=="__main__":
