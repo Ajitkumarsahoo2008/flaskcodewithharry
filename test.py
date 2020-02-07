@@ -9,8 +9,8 @@ import pymysql
 import sys
 import json
 
-with open('config.json','r') as c:
-    params = json.load(c)["params"]
+with open("config.json","r") as c:
+   params = json.load(c)["params"]
 local_server = True
 app=Flask(__name__)
 #conn=pymysql.connect(db='ajit', user='malli',password='Rama@1234',host='localhost', port=3306)
